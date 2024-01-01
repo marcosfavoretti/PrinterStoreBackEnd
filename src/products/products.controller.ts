@@ -18,10 +18,11 @@ export class ProductsController {
     return await this.productsService.findAll();
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.productsService.findOne(+id);
-  // }
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    return this.productsService.getImages(id);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {

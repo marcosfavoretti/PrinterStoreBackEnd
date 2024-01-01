@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Products } from './entities/product.entity';
@@ -18,14 +18,24 @@ export class ProductsService {
     const products = await this.product.find();
     const productsWithPhotos = await Promise.all(
       products.map(async (product) => {
-        product['photo'] = await this.findImages(product);
+        product['photo'] = (await this.findImages(product)).filter(filt=>{
+          if(filt.isMain) return filt //retorno so se for o principal a img
+        });
         return product;
       })
     );
     return productsWithPhotos;
   }
-  
- private async findImages(produto: Products) {
+  async getImages(id: number){
+      const product= await this.product.findOne({
+        where:{
+          idproduct: id
+        },
+      })
+      if(!product) throw new HttpException("problema para achar o item especificado", 404)
+      return await this.findImages(product)
+  }
+  private async findImages(produto: Products) {
     return await this.ft.createQueryBuilder('ft')
         .where('ft.idproduct = :productId', { productId: produto.idproduct })
         .getMany();
