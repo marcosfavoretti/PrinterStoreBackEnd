@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Headers, HttpException, UseGuards } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { TokenServiceService } from 'src/middleware/token-service/token-service.service';
+import { CookiesVerifyGuard } from 'src/cookies-verify/cookies-verify.guard';
 
 @Controller('products')
 export class ProductsController {
@@ -19,9 +20,14 @@ export class ProductsController {
   }
 
 
-  @Get(':id')
-  findOne(@Param('id') id: number) {
+  @Get('photo/:id')
+  findPhotos(@Param('id') id: number) {
     return this.productsService.getImages(id);
+  }
+
+  @Get(':id')
+  findProduct(@Param('id') id: number) {
+    return this.productsService.getProdutct(id);
   }
 
   @Patch(':id')

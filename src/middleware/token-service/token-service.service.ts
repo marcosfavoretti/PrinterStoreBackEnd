@@ -1,6 +1,7 @@
 import { Injectable, HttpException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken'; // Importação do jsonwebtoken
 import { User } from '../../users/entities/user.entity';
+
 @Injectable()
 export class TokenServiceService {
     private readonly secretKey = process.env.authSegredo
@@ -15,11 +16,16 @@ export class TokenServiceService {
     tokenVerify(token: string){
         try{
             jwt.verify(token, this.secretKey)
-            return jwt.decode(token)
-
+            return this.tokenDecode(token)
         }
         catch{
             throw new HttpException('token invalido', 500)
         }
     }
+
+    tokenDecode(token: string){
+        return jwt.decode(token)
+    }
+
+
 }   

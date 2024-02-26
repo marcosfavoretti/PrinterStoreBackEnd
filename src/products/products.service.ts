@@ -26,15 +26,21 @@ export class ProductsService {
     );
     return productsWithPhotos;
   }
+  
   async getImages(id: number){
-      const product= await this.product.findOne({
-        where:{
-          idproduct: id
-        },
-      })
-      if(!product) throw new HttpException("problema para achar o item especificado", 404)
+      const product = await this.getProdutct(id)
       return await this.findImages(product)
   }
+  
+  async getProdutct(id: number){
+    const product =  await this.product.findOne({
+      where:{
+        idproduct: id
+      },
+    })
+    if(!product) throw new HttpException("problema para achar o item especificado", 404)
+    return product
+}
   private async findImages(produto: Products) {
     return await this.ft.createQueryBuilder('ft')
         .where('ft.idproduct = :productId', { productId: produto.idproduct })

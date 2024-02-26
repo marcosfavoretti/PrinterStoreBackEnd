@@ -4,7 +4,6 @@ import { UsersController } from './users.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { TokenServiceService } from '../middleware/token-service/token-service.service';
-import { Products } from 'src/products/entities/product.entity';
 
 @Module({
   controllers: [UsersController],

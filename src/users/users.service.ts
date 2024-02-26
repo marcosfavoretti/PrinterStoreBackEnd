@@ -10,6 +10,7 @@ import { TokenServiceService } from '../middleware/token-service/token-service.s
 @Injectable()
 export class UsersService {
   constructor(@InjectRepository(User) private users: Repository<User>, private auth: TokenServiceService){}
+  
 
   authToken(user: User){
     return this.auth.token(user)//mando o token para a pessoa
@@ -32,14 +33,16 @@ export class UsersService {
   }
 
   async findOne(auth: FindOneUserDto) {
-  
-    return await this.users.findOne({
-      where:{
-        pass: auth.password,
-        user: auth.user
-      }
+    const user = await this.users.findOne({
+      where: {
+        user: auth.user,
+      },
     });
-    
+    if (user && auth.password === user.pass) {
+      return user;
+    }
+    // Senha incorreta ou usuário não encontrado
+    return null;
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {

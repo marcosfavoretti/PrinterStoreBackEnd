@@ -13,6 +13,8 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { UsersService } from './users/users.service';
 import { join } from 'path';
 import { Products_photo } from './products/entities/product_photo.entity';
+import { ComprasModule } from './compras/compras.module';
+import { Shop } from './compras/entities/shop.entity';
 
 @Module({
   imports: [ 
@@ -26,17 +28,18 @@ import { Products_photo } from './products/entities/product_photo.entity';
     username: process.env.user,
     password: process.env.pass,
     database: 'printerStore',
-    entities: [User, Products, Products_photo],
+    entities: [User, Products, Products_photo, Shop],
     synchronize: false,
-  }), ProductsModule, UsersModule],
+    
+  }), ProductsModule, UsersModule, ComprasModule],
   controllers: [AppController],
-  providers: [AppService, TokenServiceService,],
+  providers: [AppService, TokenServiceService],
 })
 
 export class AppModule implements NestModule{
   constructor(private dataSource: DataSource) { }
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply(TokenValidMiddlewareMiddleware).forRoutes({ path: 'products', method: RequestMethod.GET })
+    consumer.apply(TokenValidMiddlewareMiddleware).forRoutes({ path: 'products', method: RequestMethod.POST }, {path:'users/checkauth', method: RequestMethod.POST})
   }
 }
 
